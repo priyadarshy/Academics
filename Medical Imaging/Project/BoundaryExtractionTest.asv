@@ -1,0 +1,18 @@
+%[cells, B] = MIMsProjectRevC('cell2.jpg', 1.5, 190);
+
+
+area = [];
+for k = 1:cells
+    boundary = B{k};
+    area = [area, abs(trapz(boundary(:,1),boundary(:,2)))];
+    
+    circumference(k) = sum(length(boundary(:,1)));
+end
+
+mean(area);
+
+% Plotting
+plot(circumference, area, 'kx');
+title('Counted Boundary Area vs Circumference');
+xlabel('Circumference')
+ylabel('Area')

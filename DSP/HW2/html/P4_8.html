@@ -1,0 +1,155 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>P4_8</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-10-03"><meta name="DC.source" content="P4_8.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput">ki = 1:6;
+n = 0:5;
+
+<span class="keyword">for</span> k = 1:6
+    s = exp(j*(2/6)*pi*k.*n);
+    figure
+    stem(n, abs(s))
+    title([<span class="string">'k = '</span>, num2str(k)])
+    ylabel(<span class="string">'|s_k(n)|'</span>)
+    xlabel(<span class="string">'n'</span>)
+
+    disp([<span class="string">' For k = '</span>, num2str(k)])
+    disp(s)
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput"> For k = 1
+  Columns 1 through 5
+
+   1.0000             0.5000 + 0.8660i  -0.5000 + 0.8660i  -1.0000 + 0.0000i  -0.5000 - 0.8660i
+
+  Column 6
+
+   0.5000 - 0.8660i
+
+ For k = 2
+  Columns 1 through 5
+
+   1.0000            -0.5000 + 0.8660i  -0.5000 - 0.8660i   1.0000 - 0.0000i  -0.5000 + 0.8660i
+
+  Column 6
+
+  -0.5000 - 0.8660i
+
+ For k = 3
+  Columns 1 through 5
+
+   1.0000            -1.0000 + 0.0000i   1.0000 - 0.0000i  -1.0000 + 0.0000i   1.0000 - 0.0000i
+
+  Column 6
+
+  -1.0000 + 0.0000i
+
+ For k = 4
+  Columns 1 through 5
+
+   1.0000            -0.5000 - 0.8660i  -0.5000 + 0.8660i   1.0000 - 0.0000i  -0.5000 - 0.8660i
+
+  Column 6
+
+  -0.5000 + 0.8660i
+
+ For k = 5
+  Columns 1 through 5
+
+   1.0000             0.5000 - 0.8660i  -0.5000 - 0.8660i  -1.0000 + 0.0000i  -0.5000 + 0.8660i
+
+  Column 6
+
+   0.5000 + 0.8660i
+
+ For k = 6
+  Columns 1 through 5
+
+   1.0000             1.0000 - 0.0000i   1.0000 - 0.0000i   1.0000 - 0.0000i   1.0000 - 0.0000i
+
+  Column 6
+
+   1.0000 - 0.0000i
+
+</pre><img vspace="5" hspace="5" src="P4_8_01.png" alt=""> <img vspace="5" hspace="5" src="P4_8_02.png" alt=""> <img vspace="5" hspace="5" src="P4_8_03.png" alt=""> <img vspace="5" hspace="5" src="P4_8_04.png" alt=""> <img vspace="5" hspace="5" src="P4_8_05.png" alt=""> <img vspace="5" hspace="5" src="P4_8_06.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+ki = 1:6;
+n = 0:5;
+
+for k = 1:6
+    s = exp(j*(2/6)*pi*k.*n);
+    figure
+    stem(n, abs(s))
+    title(['k = ', num2str(k)])
+    ylabel('|s_k(n)|')
+    xlabel('n')
+    
+    disp([' For k = ', num2str(k)])
+    disp(s)
+    
+end
+
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,282 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework 3</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-27"><meta name="DC.source" content="granularity.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Homework 3</h1><p>Digital Image Processing Ashutosh Priyadarshy Spring 2011</p><p>Images: little256.jpg medium256.jpg</p><p>Description:</p><p>1. Use a series of LPF Masks that increase in radius in spatial-frequency domain.</p><p>2. For each LPF find the energy it encompasses.</p><p>3. Take the difference of successive LPF to find the energy at "all" radial frequencies</p><p>4. Use a bandpass range that encompasses the "interesting" part of the spectrum -- based on what the plot looks like of the energy vs radial frequency.</p><p>5. Compute the energy in this bandpass range and call it granularity.</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+
+<span class="comment">% Read in the two files of interest.</span>
+lit = imread(<span class="string">'little256.jpg'</span>);
+med = imread(<span class="string">'medium256.jpg'</span>);
+
+<span class="comment">% Some Image Constants</span>
+N = 256;
+
+<span class="comment">% Use only the green channels.</span>
+lit = lit(:, :, 2);
+med = med(:, :, 2);
+
+<span class="comment">% Compute the 2-D DFTs.</span>
+LIT = fftshift(fft2(lit));
+MED = fftshift(fft2(med));
+
+<span class="comment">% Perform log_10 compression -- for display only.</span>
+LIT_db = 20*log10(abs(LIT) + 1);
+MED_db = 20*log10(abs(MED) + 1);
+
+<span class="comment">% Display the Two Dimensional DFTs</span>
+figure(1)
+imagesc(LIT_db), colormap(<span class="string">'jet'</span>), colorbar, title(<span class="string">'DFT of little256.jpg'</span>);
+figure(2)
+imagesc(MED_db), colormap(<span class="string">'jet'</span>), colorbar, title(<span class="string">'DFT of medium256.jpg'</span>);
+
+<span class="comment">% Reduce awkwardness and make these odd length x odd length images.</span>
+<span class="comment">% This won't really matter until the last iteration, so we only "corrupt"</span>
+<span class="comment">% one calculation, and with the image being significantly lowpass it should</span>
+<span class="comment">% be fine...</span>
+LIT = LIT(1:255, 1:255);
+MED = MED(1:255, 1:255);
+
+index = 0;
+<span class="comment">% Create successively larger LOWPASS masks and find the energy by summing</span>
+<span class="comment">% DFT coefficients that fall in that mask.</span>
+<span class="keyword">for</span> u = 1:2:N/2
+
+    index = index + 1;
+    <span class="comment">% Create a circular mask.</span>
+    mask = getnhood(strel(<span class="string">'disk'</span>, u, 8));
+    <span class="comment">% Turn it into a logical array so we can pointwise multiply.</span>
+    mask = (padarray(mask, [(255-size(mask,1))/2 (255-size(mask,2))/2]));
+
+    <span class="comment">% Multiply the shifted DFT matrix (NOT log compressed) by the mask.</span>
+    LIT_relevant_coefficients = mask .* LIT;
+    MED_relevant_coefficients = mask .* MED;
+
+    <span class="comment">% Sum up all the DFT coefficients that fell in the mask and append them</span>
+    <span class="comment">% to a vector of energy versus 'u' the cutoff frequency.</span>
+    LIT_granarray(index) = sum(sum(abs(LIT_relevant_coefficients).^2));
+    MED_granarray(index) = sum(sum(abs(MED_relevant_coefficients).^2));
+
+
+<span class="keyword">end</span>
+
+
+<span class="comment">% Plot energy versus radial frequency.</span>
+LIT_perc = diff(LIT_granarray);
+figure(3);
+stem(0:4:251, diff(LIT_granarray)./LIT_granarray(end));
+title(<span class="string">' Little Image '</span>);
+xlabel(<span class="string">' \Omega '</span>);
+ylabel(<span class="string">' Percent of total Energy '</span>);
+
+MED_perc = diff(MED_granarray);
+figure(4);
+stem(0:4:251, diff(MED_granarray)./MED_granarray(end));
+title(<span class="string">' Medium Image '</span>);
+xlabel(<span class="string">' \Omega '</span>);
+ylabel(<span class="string">' Percent of total Energy '</span>);
+
+
+<span class="comment">% Based on the above graphs use a bandpass mask from u = ~ 4.2426 to ~ 109</span>
+<span class="comment">% cycles/image.</span>
+granularity_little = sum(LIT_perc(2:38))
+granularity_medium = sum(MED_perc(2:38))
+
+<span class="comment">% Divide by the total image of the respective image to get an idea of the</span>
+<span class="comment">% value.</span>
+granularity_little_normalized = granularity_little./LIT_granarray(end)
+granularity_medium_normalized = granularity_medium./MED_granarray(end)
+</pre><pre class="codeoutput">
+granularity_little =
+
+   1.4096e+13
+
+
+granularity_medium =
+
+   2.8298e+13
+
+
+granularity_little_normalized =
+
+    0.4577
+
+
+granularity_medium_normalized =
+
+    0.5149
+
+</pre><img vspace="5" hspace="5" src="granularity_01.png" alt=""> <img vspace="5" hspace="5" src="granularity_02.png" alt=""> <img vspace="5" hspace="5" src="granularity_03.png" alt=""> <img vspace="5" hspace="5" src="granularity_04.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Homework 3 
+% Digital Image Processing
+% Ashutosh Priyadarshy
+% Spring 2011
+%
+%
+% Images:
+% little256.jpg
+% medium256.jpg
+%
+% Description:
+%
+% 1. Use a series of LPF Masks that increase in radius in spatial-frequency
+% domain.
+%
+% 2. For each LPF find the energy it encompasses.
+%
+% 3. Take the difference of successive LPF to find the energy at "all"
+% radial frequencies
+% 
+% 4. Use a bandpass range that encompasses the "interesting" part of the
+% spectrum REPLACE_WITH_DASH_DASH based on what the plot looks like of the energy vs radial
+% frequency.
+% 
+% 5. Compute the energy in this bandpass range and call it granularity. 
+%
+
+clear all; close all; 
+
+% Read in the two files of interest. 
+lit = imread('little256.jpg');
+med = imread('medium256.jpg');
+
+% Some Image Constants
+N = 256; 
+
+% Use only the green channels.
+lit = lit(:, :, 2);
+med = med(:, :, 2);
+
+% Compute the 2-D DFTs.
+LIT = fftshift(fft2(lit));
+MED = fftshift(fft2(med)); 
+
+% Perform log_10 compression REPLACE_WITH_DASH_DASH for display only. 
+LIT_db = 20*log10(abs(LIT) + 1);
+MED_db = 20*log10(abs(MED) + 1);
+
+% Display the Two Dimensional DFTs
+figure(1)
+imagesc(LIT_db), colormap('jet'), colorbar, title('DFT of little256.jpg');
+figure(2)
+imagesc(MED_db), colormap('jet'), colorbar, title('DFT of medium256.jpg');
+
+% Reduce awkwardness and make these odd length x odd length images. 
+% This won't really matter until the last iteration, so we only "corrupt"
+% one calculation, and with the image being significantly lowpass it should
+% be fine...
+LIT = LIT(1:255, 1:255);
+MED = MED(1:255, 1:255);
+
+index = 0;
+% Create successively larger LOWPASS masks and find the energy by summing
+% DFT coefficients that fall in that mask. 
+for u = 1:2:N/2
+    
+    index = index + 1; 
+    % Create a circular mask.
+    mask = getnhood(strel('disk', u, 8));
+    % Turn it into a logical array so we can pointwise multiply. 
+    mask = (padarray(mask, [(255-size(mask,1))/2 (255-size(mask,2))/2]));
+    
+    % Multiply the shifted DFT matrix (NOT log compressed) by the mask. 
+    LIT_relevant_coefficients = mask .* LIT;
+    MED_relevant_coefficients = mask .* MED;
+    
+    % Sum up all the DFT coefficients that fell in the mask and append them
+    % to a vector of energy versus 'u' the cutoff frequency. 
+    LIT_granarray(index) = sum(sum(abs(LIT_relevant_coefficients).^2));
+    MED_granarray(index) = sum(sum(abs(MED_relevant_coefficients).^2));
+    
+     
+end
+
+
+% Plot energy versus radial frequency.
+LIT_perc = diff(LIT_granarray);
+figure(3); 
+stem(0:4:251, diff(LIT_granarray)./LIT_granarray(end)); 
+title(' Little Image ');
+xlabel(' \Omega ');
+ylabel(' Percent of total Energy ');
+
+MED_perc = diff(MED_granarray);
+figure(4);
+stem(0:4:251, diff(MED_granarray)./MED_granarray(end)); 
+title(' Medium Image ');
+xlabel(' \Omega ');
+ylabel(' Percent of total Energy ');
+
+
+% Based on the above graphs use a bandpass mask from u = ~ 4.2426 to ~ 109
+% cycles/image. 
+granularity_little = sum(LIT_perc(2:38))
+granularity_medium = sum(MED_perc(2:38))
+
+% Divide by the total image of the respective image to get an idea of the
+% value. 
+granularity_little_normalized = granularity_little./LIT_granarray(end) 
+granularity_medium_normalized = granularity_medium./MED_granarray(end)
+##### SOURCE END #####
+--></body></html>

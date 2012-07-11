@@ -1,0 +1,127 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plotter_temp</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-12-16"><meta name="DC.source" content="plotter_temp.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% Plotting</span>
+figure(1);
+subplot(2,2,1); imshow(orig);
+title(<span class="string">'Original + Noise'</span>)
+axis([230 280 230 280])
+subplot(2,2,3); imshow(y_correct);
+title(<span class="string">'Multidirectional Median Filter - Good Slope Choice'</span>)
+axis([230 280 230 280])
+subplot(2,2,2); imshow(y_standard);
+title(<span class="string">'Median Filter'</span>);
+axis([230 280 230 280])
+subplot(2,2,4); imshow(y_wrong);
+title(<span class="string">'Multidirectional Median Filter - Bad Slope Choice'</span>)
+axis([230 280 230 280])
+
+figure(2);
+subplot(2,2,1); stem(orig(385, :)); <span class="comment">%hold on; gradient(double(orig(385, :)));</span>
+title(<span class="string">'Original Image: Intensity values along a single row'</span>);
+axis([110 140 -5 255]);
+subplot(2,2,2); stem(y_standard(385, :)); <span class="comment">%hold on; stem(gradient(double(y_standard(385, :))), 'r');</span>
+title(<span class="string">'Filtered Image w/ Standard Median Filter: Intensity values along a single row'</span>);
+axis([110 140 -5 255]);
+subplot(2,2,3); stem(y_correct(385, :)); <span class="comment">%hold on; stem(gradient(double(y_correct(385, :))), 'r');</span>
+title(<span class="string">'Filtered Image w/ Good Choice of Slopes: Intensity values along a single row'</span>);
+axis([110 140 -5 255]);
+subplot(2,2,4); stem(y_wrong(385, :)); <span class="comment">%hold on; stem(gradient(double(y_wrong(385, :))), 'r');</span>
+title(<span class="string">'Filtered Image w/ Bad Choice of Slopes: Intensity values along a single row'</span>);
+axis([110 140 -5 255]);
+</pre><img vspace="5" hspace="5" src="plotter_temp_01.png" alt=""> <img vspace="5" hspace="5" src="plotter_temp_02.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+% Plotting
+figure(1);
+subplot(2,2,1); imshow(orig);
+title('Original + Noise')
+axis([230 280 230 280])
+subplot(2,2,3); imshow(y_correct);
+title('Multidirectional Median Filter - Good Slope Choice')
+axis([230 280 230 280])
+subplot(2,2,2); imshow(y_standard);
+title('Median Filter');
+axis([230 280 230 280])
+subplot(2,2,4); imshow(y_wrong);
+title('Multidirectional Median Filter - Bad Slope Choice')
+axis([230 280 230 280])
+
+figure(2);
+subplot(2,2,1); stem(orig(385, :)); %hold on; gradient(double(orig(385, :)));
+title('Original Image: Intensity values along a single row');
+axis([110 140 -5 255]);
+subplot(2,2,2); stem(y_standard(385, :)); %hold on; stem(gradient(double(y_standard(385, :))), 'r');
+title('Filtered Image w/ Standard Median Filter: Intensity values along a single row');
+axis([110 140 -5 255]);
+subplot(2,2,3); stem(y_correct(385, :)); %hold on; stem(gradient(double(y_correct(385, :))), 'r');
+title('Filtered Image w/ Good Choice of Slopes: Intensity values along a single row');
+axis([110 140 -5 255]);
+subplot(2,2,4); stem(y_wrong(385, :)); %hold on; stem(gradient(double(y_wrong(385, :))), 'r');
+title('Filtered Image w/ Bad Choice of Slopes: Intensity values along a single row');
+axis([110 140 -5 255]);
+
+
+##### SOURCE END #####
+--></body></html>

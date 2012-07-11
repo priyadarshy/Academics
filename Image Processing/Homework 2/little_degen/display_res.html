@@ -1,0 +1,207 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>display_res</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-13"><meta name="DC.source" content="display_res.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">CHANGE THESE TO PROCESS THE IMAGE YOU WANT %%%</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>; clear <span class="string">all</span>;
+
+<span class="comment">% Read in all the images.</span>
+img0 = imread(<span class="string">'no+degeneration.jpg'</span>);
+img1 = imread(<span class="string">'very+little+degeneration.jpg'</span>);
+img2 = imread(<span class="string">'medium+degeneration.jpg'</span>);
+img3 = imread(<span class="string">'70-80+percent+degeneration.jpg'</span>);
+</pre><h2>CHANGE THESE TO PROCESS THE IMAGE YOU WANT %%%<a name="2"></a></h2><pre class="codeinput"><span class="comment">%load res_high_degen.mat</span>
+<span class="comment">%figure(2); imshow(img3);</span>
+
+<span class="comment">%load res_med_degen.mat</span>
+<span class="comment">%figure(2); imshow(img2);</span>
+
+load <span class="string">res_little_degen.mat</span>
+figure(2); imshow(img1);
+
+<span class="comment">%load res_no_degen.mat</span>
+<span class="comment">%figure(2); imshow(img0);</span>
+
+cur_img = res(:, :, 1);
+<span class="comment">%figure(1); imshow(cur_img);</span>
+
+
+<span class="comment">%figure(2);</span>
+sel = strel(<span class="string">'square'</span>, 5);
+cur_img_erode = imerode(cur_img, sel);
+cur_img_erode = cur_img;
+
+[B, L] = bwboundaries(cur_img_erode, <span class="string">'noholes'</span>);
+area = 0; area_big = 0; counter = 0; area_acc = 0;
+counter = 0;
+hold <span class="string">on</span>;
+<span class="keyword">for</span> k = 1:length(B)
+
+    boundary = B{k};
+    area = length(boundary);
+
+    <span class="keyword">if</span>(area &lt; 400)
+        plot(boundary(:,2), boundary(:,1), <span class="string">'r'</span>, <span class="string">'LineWidth'</span>, 1);
+        area_acc = area_acc + area;
+        counter = counter + 1;
+    <span class="keyword">else</span>
+        plot(boundary(:,2), boundary(:,1), <span class="string">'w'</span>, <span class="string">'LineWidth'</span>, 2);
+        area_big = area_big + area;
+    <span class="keyword">end</span>
+
+    y = boundary(:, 2);
+    x = boundary(:, 1);
+
+
+<span class="keyword">end</span>
+hold <span class="string">off</span>;
+title([<span class="string">'Image: '</span>]);
+
+blob_count_max = length(B)
+blob_count_min = counter
+
+blob_count_estimate = counter + (area_big./(area_acc./counter))
+</pre><pre class="codeoutput">Warning: Image is too big to fit on screen; displaying at 67% 
+
+blob_count_max =
+
+   112
+
+
+blob_count_min =
+
+   107
+
+
+blob_count_estimate =
+
+  531.5788
+
+</pre><img vspace="5" hspace="5" src="display_res_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+close all; clear all;
+
+% Read in all the images.
+img0 = imread('no+degeneration.jpg');
+img1 = imread('very+little+degeneration.jpg');
+img2 = imread('medium+degeneration.jpg');
+img3 = imread('70-80+percent+degeneration.jpg');
+
+%%% CHANGE THESE TO PROCESS THE IMAGE YOU WANT %%%
+
+%load res_high_degen.mat
+%figure(2); imshow(img3);
+
+%load res_med_degen.mat
+%figure(2); imshow(img2);
+
+load res_little_degen.mat
+figure(2); imshow(img1);
+
+%load res_no_degen.mat
+%figure(2); imshow(img0);
+
+cur_img = res(:, :, 1);
+%figure(1); imshow(cur_img);
+
+
+%figure(2);
+sel = strel('square', 5);
+cur_img_erode = imerode(cur_img, sel);
+cur_img_erode = cur_img;
+
+[B, L] = bwboundaries(cur_img_erode, 'noholes');
+area = 0; area_big = 0; counter = 0; area_acc = 0;
+counter = 0;
+hold on;
+for k = 1:length(B)
+    
+    boundary = B{k};
+    area = length(boundary);
+    
+    if(area < 400)
+        plot(boundary(:,2), boundary(:,1), 'r', 'LineWidth', 1);
+        area_acc = area_acc + area;
+        counter = counter + 1;
+    else
+        plot(boundary(:,2), boundary(:,1), 'w', 'LineWidth', 2);
+        area_big = area_big + area;
+    end
+    
+    y = boundary(:, 2);
+    x = boundary(:, 1);
+
+    
+end
+hold off;
+title(['Image: ']);
+
+blob_count_max = length(B)
+blob_count_min = counter
+
+blob_count_estimate = counter + (area_big./(area_acc./counter))
+
+
+
+##### SOURCE END #####
+--></body></html>

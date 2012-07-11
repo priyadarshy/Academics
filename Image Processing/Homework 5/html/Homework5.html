@@ -1,0 +1,202 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework5</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-04-01"><meta name="DC.source" content="Homework5.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Anisotropic Diffusion Homework</a></li><li><a href="#2">Begin Anisotropic Diffusion Algorithm</a></li><li><a href="#3">Compute Gradient Images</a></li></ul></div><h2>Anisotropic Diffusion Homework<a name="1"></a></h2><pre>Ashutosh Priyadarshy</pre><pre>Digital Image Processing</pre><pre>Spring 2011</pre><pre>Input Image: 'very+little+degeneration.jpg'</pre><pre class="codeinput"><span class="comment">% Close any previous windows and clear the workspace.</span>
+close <span class="string">all</span>; clear <span class="string">all</span>;
+
+<span class="comment">% Read in the image. Scale it and noise it up.</span>
+i = imread(<span class="string">'very+little+degeneration.jpg'</span>);
+i = double(i(:,:,2))/255;
+j = imnoise(i,<span class="string">'gaussian'</span>,0.,.03);
+
+<span class="comment">% Show the noisy image that will be processed with Anisotropic Diffusion.</span>
+imagesc(j); colormap <span class="string">gray</span>;
+title(<span class="string">'Very Little Degeneration with AWGN'</span>);
+</pre><img vspace="5" hspace="5" src="Homework5_01.png" alt=""> <h2>Begin Anisotropic Diffusion Algorithm<a name="2"></a></h2><pre class="codeinput"><span class="comment">% Set the number of updates of the AD Image.</span>
+<span class="keyword">for</span> iter = 1:30
+</pre><h2>Compute Gradient Images<a name="3"></a></h2><p>North Gradient</p><pre class="codeinput">    north = zeros(size(j,1), size(j,2));
+    north(2:end, 1:end) =  j(1:end-1, 1:end) ;
+    north(1, :) = j(1, :);
+
+    del_j_north = north - j;
+
+    <span class="comment">% South Gradient.</span>
+    south = zeros(size(j,1), size(j,2));
+    south(1:end-1, 1:end) =  j(2:end, 1:end) ;
+    south(end, :) = j(end, :);
+
+    del_j_south = south - j;
+
+    <span class="comment">% West Gradient.</span>
+    west = zeros(size(j,1), size(j,2));
+    west(:, 2:end) =  j(:, 1:end-1) ;
+    west(:, 1) = j(:, 1);
+
+    del_j_west = west - j;
+
+    <span class="comment">% East Gradient.</span>
+    east = zeros(size(j,1), size(j,2));
+    east(:, 1:end-1) =  j(:, 2:end);
+    east(:, end) = j(:, end);
+
+    del_j_east = east - j;
+
+    <span class="comment">% Calculate Diffusion Coefficients.</span>
+    k = 1/4;
+    cn = exp(-(del_j_north./k).^2);
+    cs = exp(-(del_j_south./k).^2);
+    ce = exp(-(del_j_east./k).^2);
+    cw = exp(-(del_j_west./k).^2);
+
+    <span class="comment">% Update the image on this iteration.</span>
+    j_plus_1 = j + 0.25.*(cn.*del_j_north + cs.*del_j_south + east.*del_j_east + west.*del_j_west);
+    <span class="comment">% Set j as updated one, make it clear what's happening</span>
+    <span class="comment">% This wastes memory...</span>
+    j = j_plus_1;
+
+<span class="keyword">end</span>
+
+<span class="comment">% Display the results.</span>
+figure(2); imagesc(j); colormap <span class="string">gray</span>
+title([<span class="string">'Image with Anisotropic Diffusion Applied '</span> num2str(iter) <span class="string">' times.'</span>]);
+</pre><img vspace="5" hspace="5" src="Homework5_02.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Anisotropic Diffusion Homework
+%
+%  Ashutosh Priyadarshy
+%
+%  Digital Image Processing
+%
+%  Spring 2011
+%
+%  Input Image: 'very+little+degeneration.jpg'
+%
+
+% Close any previous windows and clear the workspace. 
+close all; clear all; 
+
+% Read in the image. Scale it and noise it up. 
+i = imread('very+little+degeneration.jpg');
+i = double(i(:,:,2))/255;
+j = imnoise(i,'gaussian',0.,.03);
+
+% Show the noisy image that will be processed with Anisotropic Diffusion.
+imagesc(j); colormap gray;
+title('Very Little Degeneration with AWGN');
+
+%% Begin Anisotropic Diffusion Algorithm
+
+% Set the number of updates of the AD Image. 
+for iter = 1:30
+    
+    %%% Compute Gradient Images
+    % North Gradient 
+    north = zeros(size(j,1), size(j,2)); 
+    north(2:end, 1:end) =  j(1:end-1, 1:end) ;
+    north(1, :) = j(1, :); 
+    
+    del_j_north = north - j;
+
+    % South Gradient.
+    south = zeros(size(j,1), size(j,2)); 
+    south(1:end-1, 1:end) =  j(2:end, 1:end) ;
+    south(end, :) = j(end, :); 
+
+    del_j_south = south - j;
+
+    % West Gradient.
+    west = zeros(size(j,1), size(j,2)); 
+    west(:, 2:end) =  j(:, 1:end-1) ;
+    west(:, 1) = j(:, 1); 
+
+    del_j_west = west - j;
+
+    % East Gradient.
+    east = zeros(size(j,1), size(j,2));
+    east(:, 1:end-1) =  j(:, 2:end);
+    east(:, end) = j(:, end); 
+
+    del_j_east = east - j;
+
+    % Calculate Diffusion Coefficients.
+    k = 1/4; 
+    cn = exp(-(del_j_north./k).^2);
+    cs = exp(-(del_j_south./k).^2);
+    ce = exp(-(del_j_east./k).^2);
+    cw = exp(-(del_j_west./k).^2);
+    
+    % Update the image on this iteration. 
+    j_plus_1 = j + 0.25.*(cn.*del_j_north + cs.*del_j_south + east.*del_j_east + west.*del_j_west);
+    % Set j as updated one, make it clear what's happening
+    % This wastes memory...
+    j = j_plus_1; 
+    
+end
+
+% Display the results. 
+figure(2); imagesc(j); colormap gray
+title(['Image with Anisotropic Diffusion Applied ' num2str(iter) ' times.']);
+##### SOURCE END #####
+--></body></html>

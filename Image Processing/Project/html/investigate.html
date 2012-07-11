@@ -1,0 +1,196 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Term Project</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-04-22"><meta name="DC.source" content="investigate.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Term Project</h1><pre>Ashutosh Priyadarshy</pre><pre>Digital Image Processing - Spring 2012</pre><pre>Cell Counting and Segmentation</pre><pre>input img = img1</pre><pre class="codeinput"><span class="comment">% Clear all variable and close all figures.</span>
+close <span class="string">all</span>; clear <span class="string">all</span>;
+
+<span class="comment">% Read in all the images.</span>
+img1 = imread(<span class="string">'cell1.jpg'</span>);
+img2 = imread(<span class="string">'cell2.jpg'</span>); img2(:, :, 3) = 0;
+img3 = imread(<span class="string">'cell3.jpg'</span>);
+
+<span class="comment">% Choose an Image to work with in graycale.</span>
+original = img2;
+img = rgb2gray(img2);
+img = adapthisteq(img);
+figure; imagesc(img); title(<span class="string">'Original Image'</span>);
+
+<span class="comment">% Perform Anisotropic Diffusion @50 iterations and k = 2;</span>
+img = anisotropic_diffusion(img, 50, 2);
+figure; imagesc(img); title(<span class="string">'The Image after Anisotropic Diffusion'</span>);
+
+<span class="comment">%perform full-contrast histogram stretch</span>
+img = imadjust(img); img = adapthisteq(img);
+<span class="comment">% Reshape to a linear array of intensity in order to perform a K-means.</span>
+intns = double(reshape(img, [size(img,1)*size(img,2), 1]));
+
+<span class="comment">% Perform K-Means Clustering</span>
+[cluster_idx cluster_center] = kmeans(intns,3);
+label_mat =  reshape(cluster_idx, [768 1024]);
+figure; imagesc(label_mat); title(<span class="string">'The Label Matrix following k-means Clustering'</span>);
+colorbar;
+
+<span class="comment">% Choose the desired label form the label matrix.</span>
+segments = label_mat == 3;
+figure; imagesc(segments);
+
+<span class="comment">% Extract the boundaries of the segments (Moore-Neighbor).</span>
+B = bwboundaries(segments);
+figure; imagesc(original); title(<span class="string">'Original Image with Overlaid Segmentation'</span>);
+
+hold <span class="string">on</span>;
+cell_count = 0;             <span class="comment">% Initialize a count of cells.</span>
+<span class="keyword">for</span> k = 1:length(B)
+
+    <span class="comment">% Extract the boundary.</span>
+    boundary = B{k};
+
+    <span class="comment">% Find the perimeter...threshold based on this.</span>
+    perim(k) = length(boundary);
+
+    <span class="comment">% Set a perimeter threshold and draw the boundary if it's met.</span>
+    <span class="keyword">if</span> (perim(k) &gt; 80)
+        cell_count = cell_count + 1;
+        <span class="comment">% Show the final segmentation on the original image.</span>
+        plot(boundary(:, 2), boundary(:,1), <span class="string">'w'</span>);
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+title([<span class="string">'Final Segmentation with '</span> num2str(cell_count) <span class="string">' cells.'</span>]);
+</pre><img vspace="5" hspace="5" src="investigate_01.png" alt=""> <img vspace="5" hspace="5" src="investigate_02.png" alt=""> <img vspace="5" hspace="5" src="investigate_03.png" alt=""> <img vspace="5" hspace="5" src="investigate_04.png" alt=""> <img vspace="5" hspace="5" src="investigate_05.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Term Project
+%
+%  Ashutosh Priyadarshy
+%
+%  Digital Image Processing - Spring 2012
+%
+%  Cell Counting and Segmentation
+%
+%  input img = img1
+
+% Clear all variable and close all figures.
+close all; clear all;
+
+% Read in all the images.
+img1 = imread('cell1.jpg');
+img2 = imread('cell2.jpg'); img2(:, :, 3) = 0;
+img3 = imread('cell3.jpg');
+
+% Choose an Image to work with in graycale. 
+original = img2; 
+img = rgb2gray(img2);
+img = adapthisteq(img); 
+figure; imagesc(img); title('Original Image'); 
+
+% Perform Anisotropic Diffusion @50 iterations and k = 2; 
+img = anisotropic_diffusion(img, 50, 2); 
+figure; imagesc(img); title('The Image after Anisotropic Diffusion'); 
+
+%perform full-contrast histogram stretch
+img = imadjust(img); img = adapthisteq(img); 
+% Reshape to a linear array of intensity in order to perform a K-means. 
+intns = double(reshape(img, [size(img,1)*size(img,2), 1]));
+
+% Perform K-Means Clustering
+[cluster_idx cluster_center] = kmeans(intns,3);
+label_mat =  reshape(cluster_idx, [768 1024]);
+figure; imagesc(label_mat); title('The Label Matrix following k-means Clustering');
+colorbar; 
+
+% Choose the desired label form the label matrix. 
+segments = label_mat == 3; 
+figure; imagesc(segments); 
+
+% Extract the boundaries of the segments (Moore-Neighbor). 
+B = bwboundaries(segments);
+figure; imagesc(original); title('Original Image with Overlaid Segmentation'); 
+
+hold on;
+cell_count = 0;             % Initialize a count of cells. 
+for k = 1:length(B)
+    
+    % Extract the boundary. 
+    boundary = B{k};
+    
+    % Find the perimeter...threshold based on this.
+    perim(k) = length(boundary); 
+    
+    % Set a perimeter threshold and draw the boundary if it's met. 
+    if (perim(k) > 80)
+        cell_count = cell_count + 1; 
+        % Show the final segmentation on the original image. 
+        plot(boundary(:, 2), boundary(:,1), 'w'); 
+    end
+  
+end
+title(['Final Segmentation with ' num2str(cell_count) ' cells.']);
+
+    
+
+
+
+##### SOURCE END #####
+--></body></html>

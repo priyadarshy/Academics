@@ -1,0 +1,39 @@
+
+Code References
+
+
+    [1] Efficient Approximate Energy Minimization via Graph Cuts
+         Yuri Boykov, Olga Veksler, Ramin Zabih,
+         IEEE transactions on PAMI, vol. 20, no. 12, p. 1222-1239, November
+         2001.
+  
+    [2] What Energy Functions can be Minimized via Graph Cuts?
+         Vladimir Kolmogorov and Ramin Zabih.
+         IEEE Transactions on Pattern Analysis and Machine Intelligence
+         (PAMI), vol. 26, no. 2,
+         February 2004, pp. 147-159.
+  
+    [3] An Experimental Comparison of Min-Cut/Max-Flow Algorithms
+         for Energy Minimization in Vision.
+         Yuri Boykov and Vladimir Kolmogorov.
+         In IEEE Transactions on Pattern Analysis and Machine Intelligence
+         (PAMI),
+         vol. 26, no. 9, September 2004, pp. 1124-1137.
+  
+    [4] Matlab Wrapper for Graph Cut.
+         Shai Bagon.
+         in www.wisdom.weizmann.ac.il/~bagon, December 2006.
+  
+    This software can be used only for research purposes, you should  cite ALL of
+    the aforementioned papers in any resulting publication.
+    If you wish to use this software (or the algorithms described in the
+    aforementioned paper)
+    for commercial purposes, you should be aware that there is a US patent:
+ 
+        R. Zabih, Y. Boykov, O. Veksler,
+        "System and method for fast approximate energy minimization via
+        graph cuts ",
+        United Stated Patent 6,744,923, June 1, 2004
+ 
+ 
+    The Software is provided "as is", without warranty of any kind.

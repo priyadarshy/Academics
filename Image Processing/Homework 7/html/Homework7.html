@@ -1,0 +1,191 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework 7 - Splines</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-04-17"><meta name="DC.source" content="Homework7.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Homework 7 - Splines</h1><p>Ashutosh Priyadarshy</p><p>Digital Image Processing</p><p>Spring 2012</p><p>Input image: 'no+degeneration.jpg'</p><pre class="codeinput"><span class="comment">% Clear and close.</span>
+clear <span class="string">all</span>; close <span class="string">all</span>
+<span class="comment">% Read in the original image.</span>
+img = imread(<span class="string">'no+degeneration.jpg'</span>);
+<span class="comment">% Use the green channel only.</span>
+img = img(:,:,2);
+
+<span class="comment">% Use a Laplacian of Gaussian Edge detector...let Matlab choose the</span>
+<span class="comment">% threshold automatically.</span>
+edgemap = edge(img, <span class="string">'log'</span>);
+
+<span class="comment">% Show the edge map.</span>
+imagesc(edgemap); colormap <span class="string">gray</span>;
+title(<span class="string">'Original Edge Map - Laplacian of a Gaussian'</span>);
+
+
+<span class="comment">% Perform a connected component analysis and remove too small contours.</span>
+cc = bwconncomp(edgemap);
+stats = regionprops(cc, <span class="string">'Perimeter'</span>);
+idx = find([stats.Perimeter] &gt; 400);
+pruned = ismember(labelmatrix(cc), idx);
+
+<span class="comment">% Create a label matrix so we can process the contours and fit splines.</span>
+labels = bwlabel(pruned);
+num_labels = max(max(labels));
+
+<span class="comment">% Display the part of the edge map we are dealing with.</span>
+figure; imagesc(pruned); colormap <span class="string">gray</span>;
+title(<span class="string">'Pruned Edge Map - These are the "Main" Axons'</span>);
+
+<span class="comment">% Display a blank image to show the spline edge map.</span>
+figure; imagesc(0*pruned); colormap <span class="string">gray</span>;
+title(<span class="string">'Final Spline Map of the "Main" Axons'</span>);
+
+<span class="comment">% Go through every contour.</span>
+<span class="keyword">for</span> current_label_name = 1:num_labels
+
+    <span class="comment">% Get the row, col values of the current label (contour).</span>
+    currentLabelOnly = labels == current_label_name;
+    [I, J] = find(currentLabelOnly);
+
+    <span class="comment">% Find the contours in order that they would be traversed starting in the upper right corner.</span>
+    B = bwtraceboundary(currentLabelOnly, [I(1), J(1)], <span class="string">'W'</span>, 8);
+    boundaries = B;
+    I = boundaries(:, 1); J = boundaries(:, 2);
+
+    <span class="comment">% The paratemerized curves' length.</span>
+    t = 1:length(I);
+    <span class="comment">% Fit a spline to these points using every N/200 points as a ctrl pt.</span>
+    xs = spline(t, J, 1:round(length(t)/200):max(t));
+    ys = spline(t, I, 1:round(length(t)/200):max(t));
+    <span class="comment">% Display the spline edge map.</span>
+    hold <span class="string">on</span>; plot(xs, ys, <span class="string">'g'</span>);
+
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="Homework7_01.png" alt=""> <img vspace="5" hspace="5" src="Homework7_02.png" alt=""> <img vspace="5" hspace="5" src="Homework7_03.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Homework 7 - Splines
+%
+% Ashutosh Priyadarshy
+% 
+% Digital Image Processing
+%
+% Spring 2012
+%
+% Input image: 'no+degeneration.jpg'
+%
+
+
+% Clear and close.
+clear all; close all
+% Read in the original image. 
+img = imread('no+degeneration.jpg');
+% Use the green channel only.
+img = img(:,:,2);
+
+% Use a Laplacian of Gaussian Edge detector...let Matlab choose the
+% threshold automatically. 
+edgemap = edge(img, 'log');
+
+% Show the edge map.
+imagesc(edgemap); colormap gray; 
+title('Original Edge Map - Laplacian of a Gaussian'); 
+
+
+% Perform a connected component analysis and remove too small contours. 
+cc = bwconncomp(edgemap); 
+stats = regionprops(cc, 'Perimeter');
+idx = find([stats.Perimeter] > 400);
+pruned = ismember(labelmatrix(cc), idx);
+
+% Create a label matrix so we can process the contours and fit splines. 
+labels = bwlabel(pruned); 
+num_labels = max(max(labels)); 
+
+% Display the part of the edge map we are dealing with. 
+figure; imagesc(pruned); colormap gray;
+title('Pruned Edge Map - These are the "Main" Axons'); 
+
+% Display a blank image to show the spline edge map. 
+figure; imagesc(0*pruned); colormap gray;
+title('Final Spline Map of the "Main" Axons'); 
+
+% Go through every contour. 
+for current_label_name = 1:num_labels
+    
+    % Get the row, col values of the current label (contour). 
+    currentLabelOnly = labels == current_label_name;
+    [I, J] = find(currentLabelOnly);
+    
+    % Find the contours in order that they would be traversed starting in the upper right corner.  
+    B = bwtraceboundary(currentLabelOnly, [I(1), J(1)], 'W', 8); 
+    boundaries = B;
+    I = boundaries(:, 1); J = boundaries(:, 2); 
+
+    % The paratemerized curves' length. 
+    t = 1:length(I);
+    % Fit a spline to these points using every N/200 points as a ctrl pt. 
+    xs = spline(t, J, 1:round(length(t)/200):max(t));
+    ys = spline(t, I, 1:round(length(t)/200):max(t));
+    % Display the spline edge map. 
+    hold on; plot(xs, ys, 'g');
+    
+end
+##### SOURCE END #####
+--></body></html>

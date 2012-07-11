@@ -1,0 +1,143 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework 1</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-09-12"><meta name="DC.source" content="HW1_1_15.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Homework 1</h1><pre class="codeinput"><span class="comment">% Problem 1.15(a)</span>
+
+Fs = 5e3;
+F0 = [0.5 2 3 4.5].*1e3;
+
+n = 0:1:99;
+t = n./Fs;
+
+figure(1);
+<span class="keyword">for</span> i = 1:length(F0)
+    x = sin(2*pi*F0(i)*t);
+
+    subplot(2,2, i);
+    stem(n, x);
+    xlabel(<span class="string">'n'</span>);
+    title([<span class="string">' F_0 = '</span>, num2str(F0(i)), <span class="string">'Hz'</span>]);
+
+<span class="keyword">end</span>
+
+<span class="comment">% Problem 1.15(b)(1)</span>
+F0 = 2e3;
+Fs = 50e3;
+
+t = n./Fs;
+x = sin(2*pi*F0*t);
+
+figure(2)
+stem(n, x);
+xlabel(<span class="string">'n'</span>);
+title([<span class="string">'F_0 = 50 kHz; f_0 = '</span>, num2str(F0/Fs)]);
+
+<span class="comment">% Problem 1.15(b)(2)</span>
+figure(3)
+stem(downsample(n,2), downsample(x,2));
+xlabel(<span class="string">'n'</span>);
+title(<span class="string">'Even Numbered Samples Only'</span>)
+</pre><img vspace="5" hspace="5" src="HW1_1_15_01.png" alt=""> <img vspace="5" hspace="5" src="HW1_1_15_02.png" alt=""> <img vspace="5" hspace="5" src="HW1_1_15_03.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Homework 1
+
+% Problem 1.15(a)
+
+Fs = 5e3;
+F0 = [0.5 2 3 4.5].*1e3;
+
+n = 0:1:99;
+t = n./Fs;
+
+figure(1);
+for i = 1:length(F0)
+    x = sin(2*pi*F0(i)*t);
+   
+    subplot(2,2, i);
+    stem(n, x);
+    xlabel('n');
+    title([' F_0 = ', num2str(F0(i)), 'Hz']);
+    
+end
+
+% Problem 1.15(b)(1)
+F0 = 2e3;
+Fs = 50e3;
+
+t = n./Fs;
+x = sin(2*pi*F0*t);
+
+figure(2)
+stem(n, x);
+xlabel('n');
+title(['F_0 = 50 kHz; f_0 = ', num2str(F0/Fs)]);
+
+% Problem 1.15(b)(2)
+figure(3)
+stem(downsample(n,2), downsample(x,2));
+xlabel('n');
+title('Even Numbered Samples Only')
+##### SOURCE END #####
+--></body></html>

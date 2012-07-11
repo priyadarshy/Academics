@@ -1,0 +1,293 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework 1</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-02-06"><meta name="DC.source" content="analysis.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Homework 1</h1><!--introduction--><p>Ashutosh Priyadarshy</p><p>Digital Image Processing</p><p>Spring 2012</p><p>University of Virginia</p><p>Axon &amp; Neuron Segmentation</p><p>Images: controlneuron.jpg axons.jpg</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Initial Loading and Setup</a></li><li><a href="#2">Thresholding Procedure</a></li><li><a href="#3">Image Segmentation</a></li><li><a href="#4">Final Images</a></li><li><a href="#5">Image Statistics</a></li></ul></div><h2>Initial Loading and Setup<a name="1"></a></h2><p>Loading images and convert to grayscale.</p><pre class="codeinput">close <span class="string">all</span>; clear <span class="string">all</span>;
+<span class="comment">% Load the RGB images.</span>
+axons = imread(<span class="string">'axons.jpeg'</span>);
+controlneuron = imread(<span class="string">'controlneuron.jpeg'</span>);
+
+<span class="comment">% Print out the original colour image.</span>
+<span class="comment">% figure; imshow(axons);</span>
+<span class="comment">% title('Original Colour Image');</span>
+<span class="comment">% figure; imshow(controlneuron);</span>
+<span class="comment">% title('Original Colour Image');</span>
+
+<span class="comment">% Convert the iamges to grayscale intensity images.</span>
+axons = rgb2gray(axons);
+neuron = rgb2gray(controlneuron);
+
+<span class="comment">% Display grayscale image.</span>
+<span class="comment">% figure; imshow(axons);</span>
+<span class="comment">% title('Grayscale Image');</span>
+<span class="comment">% figure; imshow(controlneuron);</span>
+<span class="comment">% title('Grayscale Image');</span>
+
+<span class="comment">% These images are both underexposed -- try and fix this.</span>
+axons = adapthisteq(axons);
+neuron =  adapthisteq(neuron);
+</pre><h2>Thresholding Procedure<a name="2"></a></h2><pre class="codeinput"><span class="comment">% Create the intensity histogram.</span>
+[pdf_axons, x_axons] = imhist(axons);
+[pdf_neuron, x_neuron] = imhist(neuron);
+
+<span class="comment">% Find the cumulative distribution of the above histograms.</span>
+<span class="keyword">for</span> i = 1:length(x_axons)
+    cdf_axons(i) = sum(pdf_axons(1:i));
+    cdf_neuron(i) = sum(pdf_neuron(1:i));
+<span class="keyword">end</span>
+
+<span class="comment">% Set some bounds...arbitrary (kinda).</span>
+lb = 0.74;
+ub = 0.78;
+
+<span class="comment">% Find the halfway point or so.</span>
+<span class="keyword">for</span> i = 1:length(x_axons)
+    <span class="keyword">if</span> (cdf_axons(i) &gt;= lb .* cdf_axons(end) &amp;&amp; cdf_axons(i) &lt;= ub .* cdf_axons(end))
+        critical_index_axons = i;
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> (cdf_neuron(i) &gt;= lb .* cdf_neuron(end) &amp;&amp; cdf_neuron(i) &lt;= ub .* cdf_neuron(end))
+        critical_index_neuron = i;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Set the thresholds.</span>
+T_axons = critical_index_axons;
+T_neuron = critical_index_neuron;
+
+<span class="comment">% Binary Threshold the images.</span>
+axons = axons &gt; T_axons;
+neuron = neuron &gt; T_neuron;
+
+<span class="comment">% Show the thresholded images.</span>
+figure; imshow(axons);
+title(<span class="string">'Thresholded Images'</span>);
+figure; imshow(neuron);
+title(<span class="string">'Thresholded Images'</span>);
+</pre><img vspace="5" hspace="5" src="analysis_01.png" alt=""> <img vspace="5" hspace="5" src="analysis_02.png" alt=""> <h2>Image Segmentation<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Create a Structuring Element.</span>
+se_a_sq = strel(<span class="string">'square'</span>, 5);
+
+<span class="comment">% Dilate the image and and show.</span>
+axons = imdilate(axons, se_a_sq);
+neuron = imdilate(neuron, se_a_sq);
+figure; imshow(axons);
+title(<span class="string">' Dilation Applied '</span>);
+figure; imshow(neuron);
+title(<span class="string">' Dilation Applied '</span>);
+
+<span class="comment">% Binary majority and show.</span>
+axons = bwmorph(axons, <span class="string">'majority'</span>);
+neuron = bwmorph(neuron, <span class="string">'majority'</span>);
+figure; imshow(axons);
+title(<span class="string">' Binary Majority Applied '</span>);
+figure; imshow(neuron);
+title(<span class="string">' Binary Majority Applied '</span>);
+
+<span class="comment">% Open image.</span>
+axons = imopen(axons, se_a_sq);
+neuron = imopen(neuron, se_a_sq);
+
+<span class="comment">% Erode the Image.</span>
+axons = imerode(axons, se_a_sq);
+neuron = imerode(neuron, se_a_sq);
+</pre><img vspace="5" hspace="5" src="analysis_03.png" alt=""> <img vspace="5" hspace="5" src="analysis_04.png" alt=""> <img vspace="5" hspace="5" src="analysis_05.png" alt=""> <img vspace="5" hspace="5" src="analysis_06.png" alt=""> <h2>Final Images<a name="4"></a></h2><pre class="codeinput">figure; imshow(axons);
+title(<span class="string">'FINAL IMAGE: Open/Erode Operation Performed'</span>);
+figure; imshow(neuron);
+title(<span class="string">'FINAL IMAGE: Open/Erode Operation Performed'</span>);
+</pre><img vspace="5" hspace="5" src="analysis_07.png" alt=""> <img vspace="5" hspace="5" src="analysis_08.png" alt=""> <h2>Image Statistics<a name="5"></a></h2><pre class="codeinput">axon_percent = sum(sum(axons))./(size(axons,1) * size(axons, 2))
+neuron_percent = sum(sum(neuron))./(size(neuron,1) * size(neuron, 2))
+</pre><pre class="codeoutput">
+axon_percent =
+
+    0.2673
+
+
+neuron_percent =
+
+    0.2997
+
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Homework 1
+% Ashutosh Priyadarshy
+%
+% Digital Image Processing
+%
+% Spring 2012
+% 
+% University of Virginia
+%
+% Axon & Neuron Segmentation
+%
+% Images:
+% controlneuron.jpg
+% axons.jpg
+%
+
+%% Initial Loading and Setup
+% Loading images and convert to grayscale. 
+close all; clear all; 
+% Load the RGB images. 
+axons = imread('axons.jpeg');
+controlneuron = imread('controlneuron.jpeg');
+
+% Print out the original colour image. 
+% figure; imshow(axons); 
+% title('Original Colour Image');
+% figure; imshow(controlneuron); 
+% title('Original Colour Image');
+
+% Convert the iamges to grayscale intensity images. 
+axons = rgb2gray(axons);
+neuron = rgb2gray(controlneuron);
+
+% Display grayscale image. 
+% figure; imshow(axons); 
+% title('Grayscale Image');
+% figure; imshow(controlneuron); 
+% title('Grayscale Image');
+
+% These images are both underexposed REPLACE_WITH_DASH_DASH try and fix this. 
+axons = adapthisteq(axons);
+neuron =  adapthisteq(neuron); 
+
+%% Thresholding Procedure
+
+% Create the intensity histogram. 
+[pdf_axons, x_axons] = imhist(axons);
+[pdf_neuron, x_neuron] = imhist(neuron);
+
+% Find the cumulative distribution of the above histograms.
+for i = 1:length(x_axons)
+    cdf_axons(i) = sum(pdf_axons(1:i));
+    cdf_neuron(i) = sum(pdf_neuron(1:i));
+end
+
+% Set some bounds...arbitrary (kinda). 
+lb = 0.74;
+ub = 0.78;
+
+% Find the halfway point or so. 
+for i = 1:length(x_axons)
+    if (cdf_axons(i) >= lb .* cdf_axons(end) && cdf_axons(i) <= ub .* cdf_axons(end))
+        critical_index_axons = i;
+    end
+    if (cdf_neuron(i) >= lb .* cdf_neuron(end) && cdf_neuron(i) <= ub .* cdf_neuron(end))
+        critical_index_neuron = i;
+    end
+end
+
+% Set the thresholds. 
+T_axons = critical_index_axons;
+T_neuron = critical_index_neuron;
+
+% Binary Threshold the images.
+axons = axons > T_axons;
+neuron = neuron > T_neuron; 
+
+% Show the thresholded images. 
+figure; imshow(axons);
+title('Thresholded Images'); 
+figure; imshow(neuron); 
+title('Thresholded Images'); 
+
+%% Image Segmentation
+
+% Create a Structuring Element.
+se_a_sq = strel('square', 5); 
+
+% Dilate the image and and show.
+axons = imdilate(axons, se_a_sq); 
+neuron = imdilate(neuron, se_a_sq);
+figure; imshow(axons); 
+title(' Dilation Applied ');
+figure; imshow(neuron);
+title(' Dilation Applied ');
+
+% Binary majority and show.
+axons = bwmorph(axons, 'majority');
+neuron = bwmorph(neuron, 'majority');
+figure; imshow(axons); 
+title(' Binary Majority Applied ');
+figure; imshow(neuron);
+title(' Binary Majority Applied ');
+
+% Open image. 
+axons = imopen(axons, se_a_sq);
+neuron = imopen(neuron, se_a_sq); 
+
+% Erode the Image. 
+axons = imerode(axons, se_a_sq);
+neuron = imerode(neuron, se_a_sq);
+
+%% Final Images
+figure; imshow(axons); 
+title('FINAL IMAGE: Open/Erode Operation Performed');
+figure; imshow(neuron); 
+title('FINAL IMAGE: Open/Erode Operation Performed');
+
+%% Image Statistics
+axon_percent = sum(sum(axons))./(size(axons,1) * size(axons, 2))
+neuron_percent = sum(sum(neuron))./(size(neuron,1) * size(neuron, 2))
+##### SOURCE END #####
+--></body></html>

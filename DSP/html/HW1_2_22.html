@@ -1,0 +1,127 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework 1 - Problem 2.22</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-09-12"><meta name="DC.source" content="HW1_2_22.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Homework 1 - Problem 2.22</h1><pre class="codeinput">x = [1 4 2 3 5 3 3 4 5 7 6 9];
+h1 = [1 1];
+h2 = [1 2 1];
+h3 = [1/2 1/2];
+h4 = [1/4 1/2 1/4];
+h5 = [1/4 -1/2 1/2];
+h6 = [1/2 -1/2];
+
+figure(1);
+hold <span class="string">on</span>;
+stem(x); stem(conv(h1, x), <span class="string">'r'</span>); stem(conv(h2, x), <span class="string">'g'</span>);
+legend(<span class="string">'x(n)'</span>, <span class="string">'y_1(n)'</span>, <span class="string">'y_2(n)'</span>);
+title(<span class="string">'x(n) and y_1(n) and y_2(n)'</span>);
+grid <span class="string">on</span>;
+
+figure(2);
+hold <span class="string">on</span>;
+stem(x); stem(conv(h3, x), <span class="string">'r'</span>); stem(conv(h4, x), <span class="string">'g'</span>); stem(conv(h5, x), <span class="string">'k'</span>);
+legend(<span class="string">'x(n)'</span>, <span class="string">'y_3(n)'</span>, <span class="string">'y_4(n)'</span>, <span class="string">'y_5(n)'</span>);
+title(<span class="string">'x(n) and y_3(n) and y_4(n) and y_5(n)'</span>);
+grid <span class="string">on</span>;
+
+figure(3);
+hold <span class="string">on</span>;
+stem(x); stem(conv(h2, x), <span class="string">'r'</span>); stem(conv(h6, x), <span class="string">'g'</span>);
+legend(<span class="string">'x(n)'</span>, <span class="string">'y_2(n)'</span>, <span class="string">'y_6(n)'</span>);
+title(<span class="string">'x(n) and y_2(n) and y_6(n)'</span>);
+grid <span class="string">on</span>;
+</pre><img vspace="5" hspace="5" src="HW1_2_22_01.png" alt=""> <img vspace="5" hspace="5" src="HW1_2_22_02.png" alt=""> <img vspace="5" hspace="5" src="HW1_2_22_03.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Homework 1 - Problem 2.22
+
+x = [1 4 2 3 5 3 3 4 5 7 6 9];
+h1 = [1 1];
+h2 = [1 2 1];
+h3 = [1/2 1/2];
+h4 = [1/4 1/2 1/4];
+h5 = [1/4 -1/2 1/2];
+h6 = [1/2 -1/2];
+
+figure(1);
+hold on;
+stem(x); stem(conv(h1, x), 'r'); stem(conv(h2, x), 'g');
+legend('x(n)', 'y_1(n)', 'y_2(n)');
+title('x(n) and y_1(n) and y_2(n)');
+grid on;
+
+figure(2);
+hold on;
+stem(x); stem(conv(h3, x), 'r'); stem(conv(h4, x), 'g'); stem(conv(h5, x), 'k');
+legend('x(n)', 'y_3(n)', 'y_4(n)', 'y_5(n)');
+title('x(n) and y_3(n) and y_4(n) and y_5(n)');
+grid on;
+
+figure(3);
+hold on;
+stem(x); stem(conv(h2, x), 'r'); stem(conv(h6, x), 'g');
+legend('x(n)', 'y_2(n)', 'y_6(n)');
+title('x(n) and y_2(n) and y_6(n)');
+grid on;
+##### SOURCE END #####
+--></body></html>

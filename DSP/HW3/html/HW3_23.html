@@ -1,0 +1,325 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW3_23</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-11-07"><meta name="DC.source" content="HW3_23.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Part a</a></li><li><a href="#3">Part B</a></li><li><a href="#4">Part C</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>;
+</pre><h2>Part a<a name="2"></a></h2><pre class="codeinput">N = [32 64 128];
+A = pi;
+
+<span class="keyword">for</span> i = 1:length(N)
+    disp([<span class="string">'N = '</span> num2str(N(i))]);
+    n = 0:N(i)-1;
+    nn = 0:2*N(i)-1;
+
+    x = cos(2*A./N(i).*n);
+
+    x_1 = upsample(x,2);
+    x_2 = upsample(x,2,1);
+    x_zoh = x_1 + x_2;
+
+    x_lin = cat(2,upsample(x,2),x(1));
+    <span class="keyword">for</span> j = 1:2:length(x_lin)-1
+        x_lin(j+1) = (x_lin(j)+x_lin(j+2))/2;
+    <span class="keyword">end</span>
+    x_lin = x_lin(1:end-1);
+
+
+    X_ZOH = abs(fft(x_zoh)).^2;
+    THD_zoh(i) = (sum(X_ZOH(1:end/2)) - X_ZOH(2))/X_ZOH(2);
+
+    X_LIN = abs(fft(x_lin)).^2;
+    THD_lin(i) = (sum(X_LIN(1:end/2)) - X_LIN(2))/X_LIN(2);
+
+    figure;
+    plot(nn, x_zoh);
+    title([<span class="string">'ZOH Interpolation N = '</span>, num2str(N(i))])
+    xlabel(<span class="string">'n'</span>);
+
+    figure;
+    plot(nn, x_lin);
+    title([<span class="string">'Linear Interpolation N = '</span>, num2str(N(i))])
+    xlabel(<span class="string">'n'</span>);
+
+    figure;
+    plot(fftshift(abs(fft(x_zoh))));
+    title(<span class="string">'Part D: ZOH Interpolation Output Spectra'</span>);
+    figure;
+    plot(fftshift(abs(fft(x_lin))));
+    title(<span class="string">'Part D: Linear Interpolation Output Spectra'</span>);
+<span class="keyword">end</span>
+
+THD_db_ZOH = 10*log10(THD_zoh)
+THD_db_lin= 10*log10(THD_lin)
+</pre><pre class="codeoutput">N = 32
+N = 64
+N = 128
+
+THD_db_ZOH =
+
+  -26.1736  -32.1995  -38.2214
+
+
+THD_db_lin =
+
+  -52.3472  -64.3989  -76.4427
+
+</pre><img vspace="5" hspace="5" src="HW3_23_01.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_02.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_03.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_04.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_05.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_06.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_07.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_08.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_09.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_10.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_11.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_12.png" alt=""> <h2>Part B<a name="3"></a></h2><pre class="codeinput">clear <span class="string">all</span>
+
+N = [32 64 128];
+A = pi;
+
+<span class="keyword">for</span> i = 1:length(N)
+    disp([<span class="string">'N = '</span> num2str(N(i))]);
+
+    n = 0:N(i)-1;
+    nn = 0:2*N(i)-1;
+
+    x = cos(2*A./N(i).*n);
+    <span class="comment">% Perform 8 Bit quantization</span>
+    x = int8(2^7.*x);
+    x = double(x);
+    x = x/2^7;
+
+    x_1 = upsample(x,2);
+    x_2 = upsample(x,2,1);
+    x_zoh = x_1 + x_2;
+
+    x_lin = cat(2,upsample(x,2),x(1));
+    <span class="keyword">for</span> j = 1:2:length(x_lin)-1
+        x_lin(j+1) = (x_lin(j)+x_lin(j+2))/2;
+    <span class="keyword">end</span>
+    x_lin = x_lin(1:end-1);
+    x_lin = int8(2^7*x_lin);
+    x_lin = double(x_lin);
+    x_lin = x_lin/2^7;
+
+    X_ZOH = abs(fft(x_zoh)).^2;
+    THD_zoh(i) = (sum(X_ZOH(1:end/2)) - X_ZOH(2))/X_ZOH(2);
+
+    X_LIN = abs(fft(x_lin)).^2;
+    THD_lin(i) = (sum(X_LIN(1:end/2)) - X_LIN(2))/X_LIN(2);
+
+    figure;
+    plot(nn, x_zoh);
+    title([<span class="string">'ZOH Interpolation N ='</span>, num2str(N(i))])
+    xlabel(<span class="string">'n'</span>);
+
+    figure;
+    plot(nn, x_lin);
+    title([<span class="string">'ZOH Interpolation N = '</span>, num2str(N(i))])
+    xlabel(<span class="string">'n'</span>);
+<span class="keyword">end</span>
+
+THD_db_ZOH = 10*log10(THD_zoh)
+THD_db_lin= 10*log10(THD_lin)
+</pre><pre class="codeoutput">N = 32
+N = 64
+N = 128
+
+THD_db_ZOH =
+
+  -26.1470  -32.1117  -37.8967
+
+
+THD_db_lin =
+
+  -48.0680  -48.7573  -48.3214
+
+</pre><img vspace="5" hspace="5" src="HW3_23_13.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_14.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_15.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_16.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_17.png" alt=""> <img vspace="5" hspace="5" src="HW3_23_18.png" alt=""> <h2>Part C<a name="4"></a></h2><p>The linear interpolation is better because it is a tighter filter and it is also smoother unlike H_ZOH. See the frequency response functions below.</p><pre class="codeinput">clear <span class="string">all</span>;
+w = -pi:0.001:pi;
+
+H_zoh = 1 + exp(1i*w);
+H_lin = 1+.5*exp(1i*w)+.5*exp(-1i*w);
+
+figure
+plot(w, (abs(H_zoh)));
+hold <span class="string">on</span>;
+plot(w, (abs(H_lin)), <span class="string">'r'</span>);
+title(<span class="string">'H_z_o_h and   H_l_i_n'</span>);
+legend(<span class="string">'H_z_o_h'</span>, <span class="string">'H_l_i_n'</span>);
+xlabel(<span class="string">'\omega'</span>);
+</pre><img vspace="5" hspace="5" src="HW3_23_19.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+clear all;
+%% Part a
+N = [32 64 128];
+A = pi;
+
+for i = 1:length(N)
+    disp(['N = ' num2str(N(i))]);
+    n = 0:N(i)-1;
+    nn = 0:2*N(i)-1;
+    
+    x = cos(2*A./N(i).*n);
+
+    x_1 = upsample(x,2);
+    x_2 = upsample(x,2,1);
+    x_zoh = x_1 + x_2;
+    
+    x_lin = cat(2,upsample(x,2),x(1));
+    for j = 1:2:length(x_lin)-1
+        x_lin(j+1) = (x_lin(j)+x_lin(j+2))/2;
+    end
+    x_lin = x_lin(1:end-1);
+    
+    
+    X_ZOH = abs(fft(x_zoh)).^2;
+    THD_zoh(i) = (sum(X_ZOH(1:end/2)) - X_ZOH(2))/X_ZOH(2);
+    
+    X_LIN = abs(fft(x_lin)).^2;
+    THD_lin(i) = (sum(X_LIN(1:end/2)) - X_LIN(2))/X_LIN(2);
+    
+    figure;
+    plot(nn, x_zoh);
+    title(['ZOH Interpolation N = ', num2str(N(i))])
+    xlabel('n');
+
+    figure;
+    plot(nn, x_lin);
+    title(['Linear Interpolation N = ', num2str(N(i))])
+    xlabel('n');
+
+    figure;
+    plot(fftshift(abs(fft(x_zoh))));
+    title('Part D: ZOH Interpolation Output Spectra');
+    figure;
+    plot(fftshift(abs(fft(x_lin))));
+    title('Part D: Linear Interpolation Output Spectra');
+end
+
+THD_db_ZOH = 10*log10(THD_zoh)
+THD_db_lin= 10*log10(THD_lin)
+
+%% Part B
+clear all
+
+N = [32 64 128];
+A = pi;
+
+for i = 1:length(N)
+    disp(['N = ' num2str(N(i))]);
+
+    n = 0:N(i)-1;
+    nn = 0:2*N(i)-1;
+    
+    x = cos(2*A./N(i).*n);
+    % Perform 8 Bit quantization
+    x = int8(2^7.*x);
+    x = double(x);  
+    x = x/2^7;
+
+    x_1 = upsample(x,2);
+    x_2 = upsample(x,2,1);
+    x_zoh = x_1 + x_2;
+    
+    x_lin = cat(2,upsample(x,2),x(1));
+    for j = 1:2:length(x_lin)-1
+        x_lin(j+1) = (x_lin(j)+x_lin(j+2))/2;
+    end
+    x_lin = x_lin(1:end-1);
+    x_lin = int8(2^7*x_lin);
+    x_lin = double(x_lin);
+    x_lin = x_lin/2^7;
+    
+    X_ZOH = abs(fft(x_zoh)).^2;
+    THD_zoh(i) = (sum(X_ZOH(1:end/2)) - X_ZOH(2))/X_ZOH(2);
+    
+    X_LIN = abs(fft(x_lin)).^2;
+    THD_lin(i) = (sum(X_LIN(1:end/2)) - X_LIN(2))/X_LIN(2);
+    
+    figure;
+    plot(nn, x_zoh);
+    title(['ZOH Interpolation N =', num2str(N(i))])
+    xlabel('n');
+
+    figure;
+    plot(nn, x_lin);
+    title(['ZOH Interpolation N = ', num2str(N(i))])
+    xlabel('n');
+end
+
+THD_db_ZOH = 10*log10(THD_zoh)
+THD_db_lin= 10*log10(THD_lin)
+
+%% Part C
+% The linear interpolation is better because it is a tighter filter and it
+% is also smoother unlike H_ZOH. See the frequency response functions
+% below.
+clear all;
+w = -pi:0.001:pi;
+
+H_zoh = 1 + exp(1i*w);
+H_lin = 1+.5*exp(1i*w)+.5*exp(-1i*w);
+
+figure
+plot(w, (abs(H_zoh)));
+hold on;
+plot(w, (abs(H_lin)), 'r');
+title('H_z_o_h and   H_l_i_n');
+legend('H_z_o_h', 'H_l_i_n');
+xlabel('\omega');
+
+
+##### SOURCE END #####
+--></body></html>

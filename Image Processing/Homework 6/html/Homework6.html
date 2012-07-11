@@ -1,0 +1,151 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework 6 - Find Steve Wilson for Goodness Sake!</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-04-08"><meta name="DC.source" content="Homework6.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Homework 6 - Find Steve Wilson for Goodness Sake!</h1><p>Ashutosh Priyadarshy</p><p>Digital Image Processing</p><p>Spring 2011</p><p>Image: "WilsonJungle.png"</p><pre class="codeinput">close <span class="string">all</span>; clear <span class="string">all</span>;
+
+<span class="comment">% Read in the jungle and the template of Stevie.</span>
+jungle = imread(<span class="string">'WilsonJungle.png'</span>);
+stevie = imread(<span class="string">'wilson.png'</span>);
+
+<span class="comment">% Perform a 2D Normalized Cross-Correlation between the template and the</span>
+<span class="comment">% image of the jungle.</span>
+votes = (normxcorr2(double(stevie), double(jungle)));
+
+<span class="comment">% Keep anything in from the xcorr that was more than 0.5.</span>
+winners = votes &gt; 0.5;
+
+<span class="comment">% Display where these spots are in the image.</span>
+figure; imagesc(winners); colormap <span class="string">gray</span>;
+
+<span class="comment">% Encircle areas that say they have Stevie in them.</span>
+[B, L] = bwboundaries(winners);
+
+<span class="comment">% Display the original jungle image.</span>
+figure; imagesc(jungle); colormap <span class="string">gray</span>;
+
+<span class="comment">% For each area where Stevie was 'found'</span>
+<span class="keyword">for</span> k = 1:length(B)
+
+    <span class="comment">% Find the 'center' of that area.</span>
+    boundary = B{k};
+    x = floor(mean(boundary(:,1)));
+    y = floor(mean(boundary(:,2)));
+
+    <span class="comment">% Get the correlation value at the point.</span>
+    xcorr_val = votes(x, y);
+    <span class="comment">% Display the correlation value on the original image.</span>
+    H = text(y,x, num2str(xcorr_val), <span class="string">'Color'</span>, <span class="string">'g'</span>);
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="Homework6_01.png" alt=""> <img vspace="5" hspace="5" src="Homework6_02.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Homework 6 - Find Steve Wilson for Goodness Sake!
+%
+% Ashutosh Priyadarshy
+%
+% Digital Image Processing
+%
+% Spring 2011
+%
+% Image: "WilsonJungle.png"
+%
+
+close all; clear all;
+
+% Read in the jungle and the template of Stevie. 
+jungle = imread('WilsonJungle.png');
+stevie = imread('wilson.png');
+
+% Perform a 2D Normalized Cross-Correlation between the template and the
+% image of the jungle. 
+votes = (normxcorr2(double(stevie), double(jungle)));
+
+% Keep anything in from the xcorr that was more than 0.5.
+winners = votes > 0.5;
+
+% Display where these spots are in the image. 
+figure; imagesc(winners); colormap gray;
+
+% Encircle areas that say they have Stevie in them.
+[B, L] = bwboundaries(winners);
+
+% Display the original jungle image. 
+figure; imagesc(jungle); colormap gray;
+
+% For each area where Stevie was 'found'
+for k = 1:length(B)
+   
+    % Find the 'center' of that area.
+    boundary = B{k};
+    x = floor(mean(boundary(:,1)));
+    y = floor(mean(boundary(:,2)));
+    
+    % Get the correlation value at the point. 
+    xcorr_val = votes(x, y);
+    % Display the correlation value on the original image. 
+    H = text(y,x, num2str(xcorr_val), 'Color', 'g'); 
+end
+
+##### SOURCE END #####
+--></body></html>

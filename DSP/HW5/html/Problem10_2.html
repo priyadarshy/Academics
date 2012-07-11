@@ -1,0 +1,118 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Problem 10.2</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-12-04"><meta name="DC.source" content="Problem10_2.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Problem 10.2</h1><pre class="codeinput"><span class="comment">% FIR Window Bandstop filter designed using the FIR1 function.</span>
+<span class="comment">% All frequency values are normalized to 1.</span>
+
+N    = 24;             <span class="comment">% Order</span>
+Fc1  = 0.16666666667;  <span class="comment">% First Cutoff Frequency</span>
+Fc2  = 0.33333333333;  <span class="comment">% Second Cutoff Frequency</span>
+flag = <span class="string">'scale'</span>;        <span class="comment">% Sampling Flag</span>
+
+<span class="comment">% Create the window vector for the design algorithm.</span>
+win = rectwin(N+1);
+
+<span class="comment">% Calculate the coefficients using the FIR1 function.</span>
+hrect  = fir1(N, [Fc1 Fc2], <span class="string">'stop'</span>, win, flag);
+figure
+freqz(hrect,1)
+
+hhamm  = fir1(N, [Fc1 Fc2], <span class="string">'stop'</span>, hamming(25), flag);
+figure
+freqz(hhamm,1)
+
+hbart  = fir1(N, [Fc1 Fc2], <span class="string">'stop'</span>, bartlett(25), flag);
+figure
+freqz(hbart,1)
+</pre><img vspace="5" hspace="5" src="Problem10_2_01.png" alt=""> <img vspace="5" hspace="5" src="Problem10_2_02.png" alt=""> <img vspace="5" hspace="5" src="Problem10_2_03.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Problem 10.2
+
+% FIR Window Bandstop filter designed using the FIR1 function.
+% All frequency values are normalized to 1.
+
+N    = 24;             % Order
+Fc1  = 0.16666666667;  % First Cutoff Frequency
+Fc2  = 0.33333333333;  % Second Cutoff Frequency
+flag = 'scale';        % Sampling Flag
+
+% Create the window vector for the design algorithm.
+win = rectwin(N+1);
+
+% Calculate the coefficients using the FIR1 function.
+hrect  = fir1(N, [Fc1 Fc2], 'stop', win, flag);
+figure
+freqz(hrect,1)
+
+hhamm  = fir1(N, [Fc1 Fc2], 'stop', hamming(25), flag);
+figure
+freqz(hhamm,1)
+
+hbart  = fir1(N, [Fc1 Fc2], 'stop', bartlett(25), flag);
+figure
+freqz(hbart,1)
+
+##### SOURCE END #####
+--></body></html>

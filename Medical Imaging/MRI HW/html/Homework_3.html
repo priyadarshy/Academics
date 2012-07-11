@@ -1,0 +1,145 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework_3</title><meta name="generator" content="MATLAB 7.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-05-13"><meta name="DC.source" content="Homework_3.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Plotting</a></li></ul></div><pre class="codeinput"><span class="comment">% Define constants.</span>
+B = 1.5;
+gamma = 2*pi*42.58e6;
+T1 = 750e-3;
+T2 = 70e-3;
+M0 = 1;
+
+<span class="comment">% Define the equations.</span>
+M = exp(-t./T2).*exp(1j*gamma*B.*t);
+
+Mx = @(t) exp(-t./T2).*cos(gamma*B.*t);
+My = @(t) exp(-t./T2).*sin(gamma*B.*t);
+Mz = @(t) (1-exp(-t./T1));
+
+<span class="comment">% Get values at specific points:</span>
+<span class="comment">% Mxvalues = [Mx(150001) Mx(170001) Mx(200001) Mx(3000001)]</span>
+<span class="comment">% Myvalues = [My(150001) My(170001) My(200001) My(3000001)]</span>
+<span class="comment">% Mzvalues = [Mz(150001) Mz(170001) Mz(200001) Mz(3000001)]</span>
+</pre><h2>Plotting<a name="2"></a></h2><p>Time span for plotting.</p><pre class="codeinput">t = 0:0.000001:.200;
+<span class="comment">% Define the equations.</span>
+Mx = exp(-t./T2).*cos(gamma*B.*t);
+My = -exp(-t./T2).*sin(gamma*B.*t);
+Mz = (1-exp(-t./T1));
+<span class="comment">% Plot Mx and My</span>
+figure(1); hold <span class="string">on</span>;
+subplot(2,1,1); plot(t, Mx, <span class="string">'r'</span>)
+title(<span class="string">'M_x(t)'</span>)
+xlabel(<span class="string">'t'</span>)
+ylabel(<span class="string">'Magnetic Field Magnitude'</span>)
+subplot(2,1,2); plot(t, My, <span class="string">'g'</span>)
+title(<span class="string">'M_y(t)'</span>)
+xlabel(<span class="string">'t'</span>)
+ylabel(<span class="string">'Magnetic Field Magnitude'</span>)
+
+A = [Mx(150000) My(150000) Mz(150000)];
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.11<br></p></div><!--
+##### SOURCE BEGIN #####
+% Define constants. 
+B = 1.5;
+gamma = 2*pi*42.58e6;
+T1 = 750e-3;
+T2 = 70e-3;
+M0 = 1;
+
+% Define the equations.
+M = exp(-t./T2).*exp(1j*gamma*B.*t);
+
+Mx = @(t) exp(-t./T2).*cos(gamma*B.*t);
+My = @(t) exp(-t./T2).*sin(gamma*B.*t);
+Mz = @(t) (1-exp(-t./T1));
+
+% Get values at specific points:
+% Mxvalues = [Mx(150001) Mx(170001) Mx(200001) Mx(3000001)]
+% Myvalues = [My(150001) My(170001) My(200001) My(3000001)]
+% Mzvalues = [Mz(150001) Mz(170001) Mz(200001) Mz(3000001)]
+
+%% Plotting
+% Time span for plotting.
+t = 0:0.000001:.200;
+% Define the equations.
+Mx = exp(-t./T2).*cos(gamma*B.*t);
+My = -exp(-t./T2).*sin(gamma*B.*t);
+Mz = (1-exp(-t./T1));
+% Plot Mx and My
+figure(1); hold on;
+subplot(2,1,1); plot(t, Mx, 'r')
+title('M_x(t)')
+xlabel('t')
+ylabel('Magnetic Field Magnitude')
+subplot(2,1,2); plot(t, My, 'g')
+title('M_y(t)')
+xlabel('t')
+ylabel('Magnetic Field Magnitude')
+
+A = [Mx(150000) My(150000) Mz(150000)];
+
+
+
+##### SOURCE END #####
+--></body></html>

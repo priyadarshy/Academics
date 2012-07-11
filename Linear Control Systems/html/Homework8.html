@@ -1,0 +1,225 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework 8</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-11-03"><meta name="DC.source" content="Homework8.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Homework 8</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Problem 6.3(c)</a></li><li><a href="#2">Answer</a></li><li><a href="#3">Problem 6.3(d)</a></li><li><a href="#4">Answer</a></li><li><a href="#5">Problem 6.3(e)</a></li><li><a href="#6">Answer</a></li><li><a href="#7">Problem 6.3(h)</a></li><li><a href="#8">Answer</a></li><li><a href="#9">Problem 6.17(b)</a></li><li><a href="#10">Answer</a></li><li><a href="#11">Problem 6.19(b)(d)</a></li></ul></div><h2>Problem 6.3(c)<a name="1"></a></h2><pre class="codeinput">num = [1];
+den = conv([1 1 0], [0.02 1]);
+L = tf(num, den);
+<span class="comment">% Open Loop Bode</span>
+figure;
+bode(L);
+title(<span class="string">'Problem 6.3(c)'</span>);
+grid <span class="string">on</span>;
+<span class="comment">% Closed Loop Bode - Phase and Gain Margins</span>
+figure;
+margin(L/(1+L));
+grid <span class="string">on</span>;
+</pre><img vspace="5" hspace="5" src="Homework8_01.png" alt=""> <img vspace="5" hspace="5" src="Homework8_02.png" alt=""> <h2>Answer<a name="2"></a></h2><p>The system is stable becuase of the gain margin being positive.</p><h2>Problem 6.3(d)<a name="3"></a></h2><pre class="codeinput">num = [1];
+den = conv([1 2 1], [1 2 4]);
+L = tf(num, den);
+<span class="comment">% Open Loop Bode</span>
+figure;
+bode(L);
+title(<span class="string">'Problem 6.3(d)'</span>);
+grid <span class="string">on</span>;
+<span class="comment">% Closed Loop Bode</span>
+figure;
+margin(L/(1+L));
+grid <span class="string">on</span>;
+</pre><img vspace="5" hspace="5" src="Homework8_03.png" alt=""> <img vspace="5" hspace="5" src="Homework8_04.png" alt=""> <h2>Answer<a name="4"></a></h2><p>The system is stable becuase of the gain margin is 21 dB.</p><h2>Problem 6.3(e)<a name="5"></a></h2><pre class="codeinput">num = [10 40];
+den = conv([1 1 0], [1 2 5]);
+L = tf(num, den);
+<span class="comment">% Open Loop Bode</span>
+figure;
+bode(L);
+title(<span class="string">'Problem 6.3(e)'</span>);
+grid <span class="string">on</span>;
+<span class="comment">% Closed Loop Bode</span>
+figure;
+margin(L/(1+L));
+grid <span class="string">on</span>;
+</pre><img vspace="5" hspace="5" src="Homework8_05.png" alt=""> <img vspace="5" hspace="5" src="Homework8_06.png" alt=""> <h2>Answer<a name="6"></a></h2><p>The system is unstable, we can determine this from phase margin.</p><h2>Problem 6.3(h)<a name="7"></a></h2><pre class="codeinput">num = [4 40 0];
+den = conv([1 100], [4 5 4]);
+L = tf(num, den);
+<span class="comment">% Open Loop Bode</span>
+figure;
+bode(L);
+title(<span class="string">'Problem 6.3(f)'</span>);
+grid <span class="string">on</span>;
+<span class="comment">% Closed Loop Bode</span>
+figure;
+margin(L/(1+L));
+grid <span class="string">on</span>;
+</pre><img vspace="5" hspace="5" src="Homework8_07.png" alt=""> <img vspace="5" hspace="5" src="Homework8_08.png" alt=""> <h2>Answer<a name="8"></a></h2><p>The system is stable becuase all of the poles of the closed loop system are in the OLHP.</p><h2>Problem 6.17(b)<a name="9"></a></h2><pre class="codeinput">num = [1 1];
+den = [3 10 0 0];
+KG = tf(num, den);
+figure;
+margin(1/(1+KG));
+figure;
+rlocus(KG);
+</pre><img vspace="5" hspace="5" src="Homework8_09.png" alt=""> <img vspace="5" hspace="5" src="Homework8_10.png" alt=""> <h2>Answer<a name="10"></a></h2><p>We can slide the bode plot up infinitely since we have infinite gain margin, the root locus also shows that positive gain is the only option.</p><h2>Problem 6.19(b)(d)<a name="11"></a></h2><pre class="codeinput">num = [1];
+den = [1 14 44 40];
+G = tf(num,den);
+figure;
+nyquist(G);
+figure;
+margin(G);
+figure;
+rlocus(G);
+</pre><img vspace="5" hspace="5" src="Homework8_11.png" alt=""> <img vspace="5" hspace="5" src="Homework8_12.png" alt=""> <img vspace="5" hspace="5" src="Homework8_13.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Homework 8
+
+%% Problem 6.3(c)
+num = [1];
+den = conv([1 1 0], [0.02 1]);
+L = tf(num, den);
+% Open Loop Bode
+figure;
+bode(L);
+title('Problem 6.3(c)');
+grid on;
+% Closed Loop Bode - Phase and Gain Margins
+figure;
+margin(L/(1+L));
+grid on;
+%% Answer
+% The system is stable becuase of the gain margin being positive.
+
+%% Problem 6.3(d)
+num = [1];
+den = conv([1 2 1], [1 2 4]);
+L = tf(num, den);
+% Open Loop Bode
+figure;
+bode(L);
+title('Problem 6.3(d)');
+grid on;
+% Closed Loop Bode
+figure;
+margin(L/(1+L));
+grid on;
+%% Answer
+% The system is stable becuase of the gain margin is 21 dB.
+
+%% Problem 6.3(e)
+num = [10 40];
+den = conv([1 1 0], [1 2 5]);
+L = tf(num, den);
+% Open Loop Bode
+figure;
+bode(L);
+title('Problem 6.3(e)');
+grid on;
+% Closed Loop Bode
+figure;
+margin(L/(1+L));
+grid on;
+%% Answer
+% The system is unstable, we can determine this from phase margin.
+
+%% Problem 6.3(h)
+num = [4 40 0];
+den = conv([1 100], [4 5 4]);
+L = tf(num, den);
+% Open Loop Bode
+figure;
+bode(L);
+title('Problem 6.3(f)');
+grid on;
+% Closed Loop Bode
+figure;
+margin(L/(1+L));
+grid on;
+%% Answer
+% The system is stable becuase all of the poles of the closed loop system
+% are in the OLHP. 
+
+%% Problem 6.17(b)
+num = [1 1];
+den = [3 10 0 0];
+KG = tf(num, den);
+figure;
+margin(1/(1+KG));
+figure;
+rlocus(KG);
+%% Answer
+% We can slide the bode plot up infinitely since we have infinite gain
+% margin, the root locus also shows that positive gain is the only option.
+
+%% Problem 6.19(b)(d)
+num = [1];
+den = [1 14 44 40];
+G = tf(num,den);
+figure;
+nyquist(G);
+figure;
+margin(G);
+figure;
+rlocus(G);
+
+
+
+##### SOURCE END #####
+--></body></html>

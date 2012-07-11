@@ -1,0 +1,314 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Homework 8.37</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-11-20"><meta name="DC.source" content="Homework8_37.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Homework 8.37</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Part a</a></li><li><a href="#2">Part b</a></li><li><a href="#3">Part c</a></li><li><a href="#4">Part d</a></li><li><a href="#5">Part e</a></li></ul></div><h2>Part a<a name="1"></a></h2><pre class="codeinput">clear <span class="string">all</span>;
+<span class="comment">% Define constants and input x.</span>
+N = 128;
+n = 0:127;
+x = zeros(size(n));
+x(1) = 1;
+r = 0.9;
+
+<span class="comment">% Compute the sequence from the difference equation.</span>
+<span class="keyword">for</span> i = 1:128
+
+    <span class="keyword">if</span> i &gt;= 3
+        y(i) = y(i-2)*(-r^2)+x(i);
+    <span class="keyword">else</span>
+        y(i) = x(i);    <span class="comment">% Since y(-1) &amp; y(-2) = 0</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+y = y(1:128);
+
+<span class="comment">% Compute a N = 128 Point DFT: using Matlab's FFT algorithm</span>
+Y = fft(y, N);
+figure;
+stem(0:N-1, abs(Y));
+xlabel(<span class="string">'k'</span>)
+ylabel(<span class="string">'|Y(k)|'</span>)
+title(<span class="string">'Part a: 128 Point DFT of y(n) with r = 0.9'</span>);
+</pre><img vspace="5" hspace="5" src="Homework8_37_01.png" alt=""> <h2>Part b<a name="2"></a></h2><p>From this we can conclude that w acts as a window on y, since W(k) has peaks in the same place as y and it suppresses sidelobes. It is performing a point by point multiplication on y in the time domain.</p><pre class="codeinput">w = (0.92).^(-n).*y;
+W = fft(w, N);
+figure;
+stem(0:N-1, abs(W));
+xlabel(<span class="string">'k'</span>);
+ylabel(<span class="string">'|W(k)|'</span>);
+title(<span class="string">'Part b: 128 Point DFT of w(n)'</span>);
+</pre><img vspace="5" hspace="5" src="Homework8_37_02.png" alt=""> <h2>Part c<a name="3"></a></h2><pre class="codeinput">clear <span class="string">all</span>;
+<span class="comment">% Define constants and input x.</span>
+N = 128;
+n = 0:127;
+x = zeros(size(n));
+x(1) = 1;
+r = 0.50;
+
+<span class="comment">% Compute the sequence from the difference equation.</span>
+<span class="keyword">for</span> i = 1:128
+
+    <span class="keyword">if</span> i &gt;= 3
+        y(i) = y(i-2)*(-r^2)+x(i);
+    <span class="keyword">else</span>
+        y(i) = x(i);    <span class="comment">% Since y(-1) &amp; y(-2) = 0</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+y = y(1:128);
+
+<span class="comment">% Compute a N = 128 Point DFT: using Matlab's FFT algorithm</span>
+Y = fft(y, N);
+figure;
+stem(0:N-1, abs(Y));
+xlabel(<span class="string">'k'</span>)
+ylabel(<span class="string">'|Y(k)|'</span>)
+title(<span class="string">'Part c: 128 Point DFT of y(n) with r = 0.5'</span>);
+</pre><img vspace="5" hspace="5" src="Homework8_37_03.png" alt=""> <h2>Part d<a name="4"></a></h2><p>This time w(n) shows the spectral peaks of y(n) even more clearly. In fact we totally suppress anything that is +/- more than a few k values of the main peaks.</p><pre class="codeinput">w = (0.55).^(-n).*y;
+W = fft(w, N);
+figure;
+stem(0:N-1, abs(W));
+xlabel(<span class="string">'k'</span>);
+ylabel(<span class="string">'|W(k)|'</span>);
+title(<span class="string">'Part d: 128 Point DFT of w(n) = 0.55^-^n y(n)'</span>);
+</pre><img vspace="5" hspace="5" src="Homework8_37_04.png" alt=""> <h2>Part e<a name="5"></a></h2><p>In the prescence of noise w does not demonstrate the peaks of the spectrum as well as it did before noise was added, in fact it has added some significant energy in the center of the spectrum.</p><pre class="codeinput">clear <span class="string">all</span>
+<span class="comment">% Define constants and input x.</span>
+N = 128;
+n = 0:127;
+x = zeros(size(n));
+x(1) = 1;
+r = 0.50;
+
+<span class="comment">% Define the noise</span>
+var = 0.1;
+sdev = sqrt(var);
+noise = sdev*randn(size(n));
+
+<span class="comment">% Compute the sequence from the difference equation.</span>
+<span class="keyword">for</span> i = 1:128
+
+    <span class="keyword">if</span> i &gt;= 3
+        y(i) = y(i-2)*(-r^2)+x(i);
+    <span class="keyword">else</span>
+        y(i) = x(i);    <span class="comment">% Since y(-1) &amp; y(-2) = 0</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+y = y(1:128);
+y = y + noise;
+
+<span class="comment">% Compute a N = 128 Point DFT: using Matlab's FFT algorithm</span>
+Y = fft(y, N);
+figure;
+stem(0:N-1, abs(Y));
+xlabel(<span class="string">'k'</span>)
+ylabel(<span class="string">'|Y(k)|'</span>)
+title(<span class="string">'Part e-c: 128 Point DFT of y(n)+noise with r = 0.5'</span>);
+
+
+w = (0.55).^(-n).*y;
+W = fft(w, N);
+figure;
+stem(0:N-1, abs(W));
+xlabel(<span class="string">'k'</span>);
+ylabel(<span class="string">'|W(k)|'</span>);
+title(<span class="string">'Part e-d: 128 Point DFT of w(n) = 0.55^-^n y(n)'</span>);
+</pre><img vspace="5" hspace="5" src="Homework8_37_05.png" alt=""> <img vspace="5" hspace="5" src="Homework8_37_06.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Homework 8.37
+
+%% Part a
+clear all;
+% Define constants and input x.
+N = 128;
+n = 0:127;
+x = zeros(size(n));
+x(1) = 1;
+r = 0.9;
+
+% Compute the sequence from the difference equation.
+for i = 1:128
+    
+    if i >= 3
+        y(i) = y(i-2)*(-r^2)+x(i);
+    else
+        y(i) = x(i);    % Since y(-1) & y(-2) = 0
+    end
+    
+end
+y = y(1:128);
+
+% Compute a N = 128 Point DFT: using Matlab's FFT algorithm
+Y = fft(y, N);
+figure;
+stem(0:N-1, abs(Y));
+xlabel('k')
+ylabel('|Y(k)|')
+title('Part a: 128 Point DFT of y(n) with r = 0.9');
+
+%% Part b
+% From this we can conclude that w acts as a window on y, since W(k) has
+% peaks in the same place as y and it suppresses sidelobes. It is
+% performing a point by point multiplication on y in the time domain. 
+
+w = (0.92).^(-n).*y;
+W = fft(w, N);
+figure;
+stem(0:N-1, abs(W));
+xlabel('k');
+ylabel('|W(k)|');
+title('Part b: 128 Point DFT of w(n)');
+
+%% Part c
+clear all;
+% Define constants and input x.
+N = 128;
+n = 0:127;
+x = zeros(size(n));
+x(1) = 1;
+r = 0.50;
+
+% Compute the sequence from the difference equation.
+for i = 1:128
+    
+    if i >= 3
+        y(i) = y(i-2)*(-r^2)+x(i);
+    else
+        y(i) = x(i);    % Since y(-1) & y(-2) = 0
+    end
+    
+end
+y = y(1:128);
+
+% Compute a N = 128 Point DFT: using Matlab's FFT algorithm
+Y = fft(y, N);
+figure;
+stem(0:N-1, abs(Y));
+xlabel('k')
+ylabel('|Y(k)|')
+title('Part c: 128 Point DFT of y(n) with r = 0.5');
+
+%% Part d
+% This time w(n) shows the spectral peaks of y(n) even more clearly. In
+% fact we totally suppress anything that is +/- more than a few k values of
+% the main peaks. 
+
+w = (0.55).^(-n).*y;
+W = fft(w, N);
+figure;
+stem(0:N-1, abs(W));
+xlabel('k');
+ylabel('|W(k)|');
+title('Part d: 128 Point DFT of w(n) = 0.55^-^n y(n)');
+
+%% Part e
+% In the prescence of noise w does not demonstrate the peaks of the
+% spectrum as well as it did before noise was added, in fact it has added
+% some significant energy in the center of the spectrum.
+
+clear all
+% Define constants and input x.
+N = 128;
+n = 0:127;
+x = zeros(size(n));
+x(1) = 1;
+r = 0.50;
+
+% Define the noise
+var = 0.1;
+sdev = sqrt(var);
+noise = sdev*randn(size(n));
+
+% Compute the sequence from the difference equation.
+for i = 1:128
+    
+    if i >= 3
+        y(i) = y(i-2)*(-r^2)+x(i);
+    else
+        y(i) = x(i);    % Since y(-1) & y(-2) = 0
+    end
+    
+end
+y = y(1:128);
+y = y + noise;
+
+% Compute a N = 128 Point DFT: using Matlab's FFT algorithm
+Y = fft(y, N);
+figure;
+stem(0:N-1, abs(Y));
+xlabel('k')
+ylabel('|Y(k)|')
+title('Part e-c: 128 Point DFT of y(n)+noise with r = 0.5');
+ 
+
+w = (0.55).^(-n).*y;
+W = fft(w, N);
+figure;
+stem(0:N-1, abs(W));
+xlabel('k');
+ylabel('|W(k)|');
+title('Part e-d: 128 Point DFT of w(n) = 0.55^-^n y(n)');
+
+
+##### SOURCE END #####
+--></body></html>
